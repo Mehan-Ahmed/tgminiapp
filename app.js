@@ -13,7 +13,7 @@ if (user.id) {
     userUsername.textContent = user.username ? `@${user.username}` : "No username";
 
     // Generate profile picture URL
-    const profilePicURL = `https://t.me/i/userpic/320/${user.telegramid}.jpg`;
+    const profilePicURL = user.photo_url;
 
     // Display profile picture
     profilePicture.src = profilePicURL;
