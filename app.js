@@ -1,27 +1,29 @@
-// Access Telegram Web App API
+// Initialize Telegram Web App
 const tg = window.Telegram.WebApp;
 
-// Expand the app to fullscreen
-tg.expand();
+// Fetch user data
+const user = tg.initDataUnsafe?.user || {}; // Safe fallback in case no user data is available
 
-// Get user data from Telegram
-const user = tg.initDataUnsafe?.user || {};
+// Display user info in the app
+const userInfoContainer = document.getElementById("user-info");
 
-// Update the UI with user information
-if (user) {
-  // Set user photo (if available)
-  const photoUrl = user.photo_url || 'https://via.placeholder.com/100'; // Fallback to placeholder if no photo
-  document.getElementById('profile-photo').src = photoUrl;
-
-  // Set user name
-  const fullName = user.first_name + (user.last_name ? ` ${user.last_name}` : '');
-  document.getElementById('user-name').textContent = fullName;
-
-  // Set username
-  document.getElementById('username').textContent = user.username ? `@${user.username}` : 'No username';
-
-  // Set Telegram ID
-  document.getElementById('telegram-id').textContent = `ID: ${user.id}`;
+if (user.id) {
+    userInfoContainer.innerHTML = `
+        <h3>User Information</h3>
+        <p><strong>First Name:</strong> ${user.first_name || "N/A"}</p>
+        <p><strong>Last Name:</strong> ${user.last_name || "N/A"}</p>
+        <p><strong>Username:</strong> ${user.username || "N/A"}</p>
+        <p><strong>Language:</strong> ${user.language_code || "N/A"}</p>
+    `;
 } else {
-  alert('Unable to fetch user data!');
+    userInfoContainer.innerHTML = "<p>User data is not available.</p>";
 }
+
+// Optional: Show Telegram Main Button
+tg.MainButton.text = "Proceed";
+tg.MainButton.show();
+
+// Handle main button click
+tg.MainButton.onClick(() => {
+    tg.sendData("User clicked the button!");
+});
