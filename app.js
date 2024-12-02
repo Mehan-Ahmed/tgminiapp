@@ -2,28 +2,26 @@
 const tg = window.Telegram.WebApp;
 
 // Fetch user data
-const user = tg.initDataUnsafe?.user || {}; // Safe fallback in case no user data is available
+const user = tg.initDataUnsafe?.user || {};
+const profilePicture = document.getElementById("profile-picture");
+const userName = document.getElementById("user-name");
+const userUsername = document.getElementById("user-username");
 
-// Display user info in the app
-const userInfoContainer = document.getElementById("user-info");
-
+// Display user info
 if (user.id) {
-    userInfoContainer.innerHTML = `
-        <h3>User Information</h3>
-        <p><strong>First Name:</strong> ${user.first_name || "N/A"}</p>
-        <p><strong>Last Name:</strong> ${user.last_name || "N/A"}</p>
-        <p><strong>Username:</strong> ${user.username || "N/A"}</p>
-        <p><strong>Language:</strong> ${user.language_code || "N/A"}</p>
-    `;
+    userName.textContent = `${user.first_name || "User"} ${user.last_name || ""}`;
+    userUsername.textContent = user.username ? `@${user.username}` : "No username";
+
+    // Generate profile picture URL
+    const profilePicURL = `https://t.me/i/userpic/320/${user.id}.jpg`;
+
+    // Display profile picture
+    profilePicture.src = profilePicURL;
+    profilePicture.onerror = () => {
+        profilePicture.src = "https://via.placeholder.com/100?text=No+Image"; // Default fallback
+    };
 } else {
-    userInfoContainer.innerHTML = "<p>User data is not available.</p>";
+    userName.textContent = "User data not available";
+    userUsername.textContent = "";
+    profilePicture.src = "https://via.placeholder.com/100?text=No+Image"; // Default fallback
 }
-
-// Optional: Show Telegram Main Button
-tg.MainButton.text = "Proceed";
-tg.MainButton.show();
-
-// Handle main button click
-tg.MainButton.onClick(() => {
-    tg.sendData("User clicked the button!");
-});
